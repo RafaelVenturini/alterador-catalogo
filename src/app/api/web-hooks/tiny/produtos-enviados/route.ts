@@ -9,9 +9,12 @@ export async function POST(req: Request) {
 		if (cnpj === "16801255000193" && tipo === "estoque") {
 			const productId = dados.idProduto
 			
-			await getTiny(productId)
-			
-			return Response.json({status: 200})
+			const resp = await getTiny(productId)
+			if (resp.status === "OK") return Response.json({status: 200})
+			else {
+				console.log(`Erro. o item ${productId} nao foi salvo`)
+				return Response.json({status: 500})
+			}
 		}
 	} catch (e) {
 		console.log("Erro ao receber WebHook: ", e)
