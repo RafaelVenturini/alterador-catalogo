@@ -44,10 +44,7 @@ export async function getTiny(arr: number[]) {
                                                          tec_id,
                                                          top_id, ncm,
                                                          plca_id)
-                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                             ?,
-                                             ?, ?,
-                                             ?)
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                      ON DUPLICATE KEY UPDATE ${onDuplicate(['sku', 'nuvem_id', 'nome', 'preco', 'img', 'tamanho', 'blu_id', 'cor_id', 'inf_id', 'mul_id', 'tec_id',
                                          'top_id', 'ncm', 'plca_id'])}
 			`, produto)

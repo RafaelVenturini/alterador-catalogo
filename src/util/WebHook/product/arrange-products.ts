@@ -1,4 +1,9 @@
 import {WebHookBD} from '@/util/database'
+import {config} from "dotenv"
+
+config()
+
+const token = process.env.TNY_TOKEN
 
 export function arrangeSku(skuFull: string, name: string) {
 	const skuSeg = skuFull.split('-')
@@ -81,7 +86,7 @@ export async function plcaId(peso: string | number, largura: string | number, co
 }
 
 export async function pesquisar_id(id: string | number) {
-	const linkPesquisa = `https://api.tiny.com.br/api2/produto.obter.php?token=${process.env.TNY_TOKEN}&formato=json&id=${id}`
+	const linkPesquisa = `https://api.tiny.com.br/api2/produto.obter.php?token=${token}&formato=json&id=${id}`
 	const data = await (await fetch(linkPesquisa)).json()
 	return data.retorno.produto
 }
