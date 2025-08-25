@@ -59,7 +59,7 @@ export interface WebHook {
 	idEcommerce: number;
 	tipo: string;
 	versao: string;
-	dados: { idProduto: number };
+	dados: { idProduto: number | number[] };
 }
 
 export interface Produto {

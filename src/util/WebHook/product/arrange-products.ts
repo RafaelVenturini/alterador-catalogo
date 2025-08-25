@@ -1,4 +1,6 @@
-export function arrangeSku(skuFull, name) {
+import {WebHookBD} from '@/util/database'
+
+export function arrangeSku(skuFull: string, name: string) {
 	const skuSeg = skuFull.split('-')
 	
 	let blu = null
@@ -10,7 +12,7 @@ export function arrangeSku(skuFull, name) {
 	let tam = null
 	
 	if (skuSeg[0] === 'SORT' || skuSeg[0] === 'SRT') {
-		tam = skuSeg.includes(['TU']) ? 'TU' : 'TP'
+		tam = skuSeg.includes('TU') ? 'TU' : 'TP'
 	} else if (skuSeg.length === 4) {
 		if (skuSeg[0][0] === 'L' || skuSeg[0][0] === 'S') {
 			inf = skuSeg[0]
@@ -48,13 +50,16 @@ export function arrangeSku(skuFull, name) {
 	}
 }
 
-export function arrangeImg(img) {
+export function arrangeImg(img: string) {
 	return JSON.stringify(img).replaceAll('{"anexo":', '').replaceAll('}', '')
 }
 
+interface QueryPLCA {
+	plca_id: number;
+}
 
-export async function plcaId(peso, largura, comprimento, altura) {
-	const [plcaRow] = await WebHookBD.execute(`
+export async function plcaId(peso: string | number, largura: string | number, comprimento: string | number, altura: string | number) {
+	const plcaRows = await WebHookBD.execute(`
         SELECT plca_id
         FROM plca
         WHERE peso = ?
@@ -63,17 +68,20 @@ export async function plcaId(peso, largura, comprimento, altura) {
           AND altura = ?
 	`, [peso, largura, comprimento, altura])
 	
+	// @ts-expect-error rows exists
+	const plcaRow: QueryPLCA = plcaRows.rows[0]
+	
 	let plca = 13
 	
-	if (plcaRow[0] && plcaRow[0].plca_id) {
-		plca = plcaRow[0].plca_id
+	if (plcaRow && plcaRow.plca_id) {
+		plca = plcaRow.plca_id
 	}
 	
 	return plca
 }
 
-export async function pesquisar_id(id) {
-	const linkPesquisa = `https://api.tiny.com.br/api2/produto.obter.php?token=${token}&formato=json&id=${id}`
+export async function pesquisar_id(id: string | number) {
+	const linkPesquisa = `https://api.tiny.com.br/api2/produto.obter.php?token=${process.env.TNY_TOKEN}&formato=json&id=${id}`
 	const data = await (await fetch(linkPesquisa)).json()
 	return data.retorno.produto
 }

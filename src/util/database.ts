@@ -27,3 +27,7 @@ export const WebHookBD = mysql.createPool({
 	queueLimit: 0,
 	idleTimeout: 300000,
 })
+
+export function onDuplicate(fields: string[]) {
+	return fields.map(f => `${f} = VALUES(${f})`).join(', ')
+}

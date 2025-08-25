@@ -1,13 +1,16 @@
-import {pesquisar_id} from "@/util/WebHook/product/arrange-products";
-import {WebHookBD} from "@/util/database";
-import {error} from "next/dist/build/output/log";
+import {
+	arrangeImg,
+	arrangeSku,
+	pesquisar_id,
+	plcaId
+} from "@/util/WebHook/product/arrange-products";
+import {onDuplicate, WebHookBD} from "@/util/database";
 
-export async function getTiny(arr) {
+export async function getTiny(arr: number[]) {
 	try {
-		
-		for (const id in arr) {
+		for (const id of arr) {
 			console.log('Adicionando o item: ', id)
-			const data = await pesquisar_id(arr[id]);
+			const data = await pesquisar_id(id);
 			
 			const nome = data.nome
 			const sku = data.codigo
@@ -17,34 +20,19 @@ export async function getTiny(arr) {
 			const altura = data.alturaEmbalagem
 			const largura = data.larguraEmbalagem
 			const comprimento = data.comprimentoEmbalagem
-			const anexo = (JSON.stringify(data.anexos)).replaceAll('{"anexo":', '').replaceAll('}', '')
+			const anexo = arrangeImg(data.anexos)
 			
 			const skus = arrangeSku(sku, nome)
-			const blu = skus[0]
-			const inf = skus[1]
-			const top = skus[2]
-			const tec = skus[3]
-			const tam = skus[4]
-			const cor = skus[5]
-			const mul = skus[6]
+			const blu = skus.blu
+			const inf = skus.inf
+			const top = skus.top
+			const tec = skus.tec
+			const tam = skus.tam
+			const cor = skus.cor
+			const mul = skus.mul
+			const plca = await plcaId(peso, largura, comprimento, altura)
 			
-			const [plcaRow] = await WebHookBD.execute(`
-                SELECT plca_id
-                FROM plca
-                WHERE peso = ?
-                  AND largura = ?
-                  AND comprimento = ?
-                  AND altura = ?
-			`, [peso, largura, comprimento, altura])
-			
-			let plca = "13"
-			
-			if (plcaRow[0] && plcaRow[0].plca_id) {
-				plca = plcaRow[0].plca_id
-			}
-			
-			
-			const produto = [sku, arr[id], nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, ncm, plca]
+			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, ncm, plca]
 			console.log("Produto Gerado: ", produto)
 			await WebHookBD.execute(`INSERT INTO produto(sku, tiny_id,
                                                          nome,
@@ -64,8 +52,8 @@ export async function getTiny(arr) {
                                          'top_id', 'ncm', 'plca_id'])}
 			`, produto)
 			console.log('item adicionado!')
-			return {status: "OK"}
 		}
+		return {status: "OK"}
 	} catch (e) {
 		return {status: "Error", error: e}
 	}

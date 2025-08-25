@@ -7,10 +7,10 @@ export async function POST(req: Request) {
 		
 		const {cnpj, tipo, dados} = body
 		if (cnpj === "16801255000193" && tipo === "estoque") {
-			const productId = dados.idProduto
-			
+			let productId = dados.idProduto
+			if (!Array.isArray(productId)) productId = [productId]
 			const resp = await getTiny(productId)
-			if (resp.status === "OK") return Response.json({status: 200})
+			if (resp && resp.status === "OK") return Response.json({status: 200})
 			else {
 				console.log(`Erro. o item ${productId} nao foi salvo`)
 				return Response.json({status: 500})
