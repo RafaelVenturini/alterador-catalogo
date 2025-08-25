@@ -11,6 +11,7 @@ export async function getTiny(arr: number[]) {
 		for (const id of arr) {
 			console.log('Adicionando o item: ', id)
 			const data = await pesquisar_id(id);
+			console.log('data: ', data)
 			
 			const nome = data.nome
 			const sku = data.codigo
@@ -33,7 +34,7 @@ export async function getTiny(arr: number[]) {
 			const plca = await plcaId(peso, largura, comprimento, altura)
 			
 			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, ncm, plca]
-			console.log("Produto Gerado: ", produto)
+			console.log("Produto a ser Gerado: ", produto)
 			await WebHookBD.execute(`INSERT INTO produto(sku, tiny_id,
                                                          nome,
                                                          preco, img,
@@ -44,7 +45,8 @@ export async function getTiny(arr: number[]) {
                                                          tec_id,
                                                          top_id, ncm,
                                                          plca_id)
-                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                             ?, ?, ?, ?)
                                      ON DUPLICATE KEY UPDATE ${onDuplicate(['sku', 'nuvem_id', 'nome', 'preco', 'img', 'tamanho', 'blu_id', 'cor_id', 'inf_id', 'mul_id', 'tec_id',
                                          'top_id', 'ncm', 'plca_id'])}
 			`, produto)

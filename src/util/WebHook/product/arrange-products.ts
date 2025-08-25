@@ -74,7 +74,7 @@ export async function plcaId(peso: string | number, largura: string | number, co
 	`, [peso, largura, comprimento, altura])
 	
 	// @ts-expect-error rows exists
-	const plcaRow: QueryPLCA = plcaRows.rows[0]
+	const plcaRow: QueryPLCA = plcaRows[0][0].plca_id
 	
 	let plca = 13
 	
