@@ -13,6 +13,7 @@ export async function POST(req: Request) {
 			if (resp && resp.status === "OK") return Response.json({status: 200})
 			else {
 				console.log(`Erro. o item ${productId} nao foi salvo`)
+				console.log(resp.error)
 				return Response.json({status: 500})
 			}
 		}
