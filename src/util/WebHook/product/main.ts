@@ -55,7 +55,8 @@ export async function getTiny(arr: number[]) {
 		}
 		return {status: "OK"}
 	} catch (e) {
-		return {status: "Error", error: e}
+		//@ts-expect-error e = sqlError
+		return {status: "Error", error: e.sqlMessage ? e.sqlMessage : e}
 	}
 }
 
