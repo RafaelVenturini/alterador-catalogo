@@ -32,8 +32,9 @@ export async function getTiny(arr: number[]) {
 			const cor = skus.cor
 			const mul = skus.mul
 			const plca = await plcaId(peso, largura, comprimento, altura)
-			
-			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, ncm, plca]
+			const criacao = new Date().toISOString().split('T')[0]
+
+			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, ncm, plca, criacao]
 			console.log("Produto a ser Gerado: ", produto)
 			await WebHookBD.execute(`INSERT INTO produto(sku, tiny_id,
                                                          nome,
@@ -44,11 +45,11 @@ export async function getTiny(arr: number[]) {
                                                          mul_id,
                                                          tec_id,
                                                          top_id, ncm,
-                                                         plca_id)
+                                                         plca_id, criacao)
                                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                             ?, ?, ?, ?)
-                                     ON DUPLICATE KEY UPDATE ${onDuplicate(['sku', 'nuvem_id', 'nome', 'preco', 'img', 'tamanho', 'blu_id', 'cor_id', 'inf_id', 'mul_id', 'tec_id',
-                                         'top_id', 'ncm', 'plca_id'])}
+                                             ?, ?, ?, ?, ?)
+                                     ON DUPLICATE KEY UPDATE ${onDuplicate(['sku', 'nome', 'preco', 'img', 'tamanho', 'blu_id', 'cor_id', 'inf_id', 'mul_id', 'tec_id',
+                                         'top_id', 'ncm', 'plca_id', 'criacao'])}
 			`, produto)
 			console.log('item adicionado!')
 		}
@@ -57,3 +58,5 @@ export async function getTiny(arr: number[]) {
 		return {status: "Error", error: e}
 	}
 }
+
+
