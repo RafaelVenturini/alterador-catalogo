@@ -11,7 +11,7 @@ export async function getTiny(arr: number[]) {
 		for (const id of arr) {
 			console.log('Adicionando o item: ', id)
 			const data = await pesquisar_id(id);
-			console.log('data: ', data)
+			// console.log('data: ', data)
 			
 			const nome = data.nome
 			const sku = data.codigo
@@ -51,7 +51,7 @@ export async function getTiny(arr: number[]) {
                                      ON DUPLICATE KEY UPDATE ${onDuplicate(['sku', 'nome', 'preco', 'img', 'tamanho', 'blu_id', 'cor_id', 'inf_id', 'mul_id', 'tec_id',
                                          'top_id', 'ncm', 'plca_id', 'criacao'])}
 			`, produto)
-			console.log('item adicionado!')
+			// console.log('item adicionado!')
 		}
 		return {status: "OK"}
 	} catch (e) {
