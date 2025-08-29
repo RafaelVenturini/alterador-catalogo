@@ -1,6 +1,6 @@
 import {WebHookBD} from '@/util/database'
 import {config} from "dotenv"
-import { FieldPacket } from 'mysql2'
+import {FieldPacket} from 'mysql2'
 
 config()
 
@@ -65,16 +65,16 @@ interface PlcaRecord {
 }
 
 export async function plcaId(peso: string | number, largura: string | number, comprimento: string | number, altura: string | number) {
-
+	
 	const [rows] = await WebHookBD.execute(`
-  SELECT plca_id
-  FROM plca
-  WHERE peso = ?
-    AND largura = ?
-    AND comprimento = ?
-    AND altura = ?
-`, [peso, largura, comprimento, altura]) as [PlcaRecord[], FieldPacket[]];
-
+        SELECT plca_id
+        FROM plca
+        WHERE peso = ?
+          AND largura = ?
+          AND comprimento = ?
+          AND altura = ?
+	`, [peso, largura, comprimento, altura]) as [PlcaRecord[], FieldPacket[]];
+	
 	let plcaSelect: number | undefined;
 	if (rows.length > 0) {
 		plcaSelect = rows[0].plca_id;
