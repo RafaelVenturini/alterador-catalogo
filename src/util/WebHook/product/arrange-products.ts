@@ -1,5 +1,6 @@
 import {WebHookBD} from '@/util/database'
 import {config} from "dotenv"
+import { FieldPacket } from 'mysql2'
 
 config()
 
@@ -59,27 +60,28 @@ export function arrangeImg(img: string) {
 	return JSON.stringify(img).replaceAll('{"anexo":', '').replaceAll('}', '')
 }
 
-interface QueryPLCA {
+interface PlcaRecord {
 	plca_id: number;
 }
 
 export async function plcaId(peso: string | number, largura: string | number, comprimento: string | number, altura: string | number) {
-	const plcaRows = await WebHookBD.execute(`
-        SELECT plca_id
-        FROM plca
-        WHERE peso = ?
-          AND largura = ?
-          AND comprimento = ?
-          AND altura = ?
-	`, [peso, largura, comprimento, altura])
-	
-	let plcaSelect
-	if (Array.isArray(plcaRows[0]) && plcaRows[0].length > 0 && plcaRows[0][0].plca_id) {
-		plcaSelect = plcaRows[0][0].plca_id
+
+	const [rows] = await WebHookBD.execute(`
+  SELECT plca_id
+  FROM plca
+  WHERE peso = ?
+    AND largura = ?
+    AND comprimento = ?
+    AND altura = ?
+`, [peso, largura, comprimento, altura]) as [PlcaRecord[], FieldPacket[]];
+
+	let plcaSelect: number | undefined;
+	if (rows.length > 0) {
+		plcaSelect = rows[0].plca_id;
 	}
-
+	
 	let plca = null
-
+	
 	if (plcaSelect) {
 		plca = plcaSelect
 	}
