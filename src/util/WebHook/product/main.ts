@@ -11,7 +11,7 @@ export async function getTiny(arr: number[]) {
 		for (const id of arr) {
 			console.log('Adicionando o item: ', id)
 			const data = await pesquisar_id(id);
-			// console.log('data: ', data)
+			console.log('data: ', JSON.stringify(data, null, 2))
 			
 			const nome = data.nome
 			const sku = data.codigo
@@ -33,7 +33,7 @@ export async function getTiny(arr: number[]) {
 			const mul = skus.mul
 			const plca = await plcaId(peso, largura, comprimento, altura)
 			const criacao = new Date().toISOString().split('T')[0]
-
+			
 			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, ncm, plca, criacao]
 			console.log("Produto a ser Gerado: ", produto)
 			await WebHookBD.execute(`INSERT INTO produto(sku, tiny_id,
