@@ -8,7 +8,7 @@ export async function POST(request: Request) {
 	try {
 		const verified = await verifyPost(request)
 		if (!verified) {
-			console.log("Erro ao verificar WebHook")
+			console.error("Erro ao verificar WebHook")
 			return new Response("Verification Error", {status: 401});
 		}
 		const data = await request.json()
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 		}
 		return new Response(`Error on webhook`, {status: 500})
 	} catch (e) {
-		console.log("Erro ao processar pedido: ", e)
+		console.error("Erro ao processar pedido: ", e)
 		return new Response(`Error on webhook`, {status: 500})
 	}
 }

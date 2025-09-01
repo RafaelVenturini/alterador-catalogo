@@ -24,7 +24,6 @@ export async function getOrderById(orderId: number) {
 			`https://api.tiendanube.com/v1/4820240/orders/${orderId}`,
 			nuvemOpt
 		);
-		console.log("Resposta da API: ", response);
 		
 		if (!response.ok) {
 			console.error(`HTTP error! status: ${response.status} | message: ${response.statusText}`);
@@ -49,7 +48,6 @@ export async function getOrderById(orderId: number) {
 const erros: string[] = [];
 
 export async function processOrder(order: Order) {
-	console.log("Processando pedido: ", order);
 	const custId = order.customer.identification;
 	await updateClient(order.customer);
 	const addressId = await updateAddress(order.shipping_address, custId);
@@ -159,6 +157,6 @@ async function updateOrderProducts(products: OrderItem[], pedidoId: number) {
 		}
 	}
 	if (erros.length > 0) {
-		console.log(`\n\n\n\nERROS: ${erros}\n\n\n\n`);
+		console.error(`ERROS: ${erros}`);
 	}
 }
