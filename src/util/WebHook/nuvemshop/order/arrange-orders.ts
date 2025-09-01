@@ -1,5 +1,6 @@
 import {
 	arrangeDate,
+	nuvemOpt,
 	onDuplicate,
 	updateClient
 } from "@/util/WebHook/nuvemshop/reusable";
@@ -15,26 +16,47 @@ import {RowDataPacket} from "mysql2/promise";
 
 config();
 
-const url = process.env.NVMSHOP_URL;
 
 export async function getOrderById(orderId: number) {
 	try {
-		const response = await fetch(`${url}/orders/${orderId}`);
-		return {status: "ok", response: await response.json()};
+		console.log("Buscando pedido: ", orderId);
+		const response = await fetch(
+			`https://api.tiendanube.com/v1/4820240/orders/${orderId}`,
+			nuvemOpt
+		);
+		console.log("Resposta da API: ", response);
+		
+		if (!response.ok) {
+			console.error(`HTTP error! status: ${response.status} | message: ${response.statusText}`);
+			return {
+				status: "error",
+				message: `HTTP ${response.status}: ${response.statusText}`
+			};
+		}
+		
+		const data = await response.json();
+		return {status: "ok", response: data};
+		
 	} catch (error) {
-		console.error(error);
-		return {status: "error", message: error};
+		console.error("Error fetching order:", error);
+		return {
+			status: "error",
+			message: error instanceof Error ? error.message : "Unknown error"
+		};
 	}
 }
 
 const erros: string[] = [];
 
 export async function processOrder(order: Order) {
+	console.log("Processando pedido: ", order);
 	const custId = order.customer.identification;
 	await updateClient(order.customer);
 	const addressId = await updateAddress(order.shipping_address, custId);
 	await updateOrder(order, addressId);
-	console.log("\n\n\n\n\nErros nos produtos: ", erros);
+	if (erros.length > 0) {
+		console.log("\n\n\n\n\nErros nos produtos: ", erros);
+	}
 }
 
 async function updateAddress(address: Address, customerId: string) {
@@ -102,10 +124,10 @@ async function updateOrder(order: Order, enderecoId: number) {
 		order.subtotal,
 		order.discount,
 		order.total,
-		order.fulfillments[0].shipping.carrier.name,
-		order.fulfillments[0].shipping.option.name,
+		order.fulfillments[0].shipping?.carrier.name || null,
+		order.fulfillments[0].shipping?.option.name || null,
 		order.storefront,
-		order.fulfillments[0].tracking_info.code,
+		order.fulfillments[0].tracking_info?.code || null,
 		arrangeDate(order.created_at),
 		order.payment_details.method,
 		order.payment_details.credit_card_company,
