@@ -210,6 +210,7 @@ interface ShippingAddress {
 }
 
 export interface Customer {
+	code: number;
 	id: number;
 	name: string;
 	email: string;

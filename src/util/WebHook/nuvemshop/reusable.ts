@@ -45,7 +45,12 @@ export async function verifyPost(request: Request) {
 		console.log(`hmacHeader: ${hmacHeader} | secret: ${secret}`);
 		return false;
 	}
-	//
+	return true;
+	
+	//////////////////////////////////////////////
+	// Temporariamente desabilitado para testes //
+	/////////////////////////////////////////////
+	
 	// // Remove prefixo sha256= se existir
 	// if (hmacHeader.startsWith('sha256=')) {
 	// 	hmacHeader = hmacHeader.substring(7);
@@ -86,7 +91,6 @@ export async function verifyPost(request: Request) {
 	// return hmacHeader === hashFromRawBody ||
 	// 	hmacHeader === hashFromParsedBody ||
 	// 	hmacHeader === hashWithoutEncoding;
-	return true; // Temporariamente desabilitado para testes
 }
 
 export const nuvemOpt = {
