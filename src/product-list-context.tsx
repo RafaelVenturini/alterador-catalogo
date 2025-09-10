@@ -66,7 +66,7 @@ export function CatalogProvider({children}: { children: ReactNode }) {
 		})
 		
 		setItems(prev => prev.map(x => {
-			if (x.sku === body.tiny_id) {
+			if (x.tiny_id === body.tiny_id) {
 				const updates: Partial<NewList> = {}
 				
 				if (body.id === 'estoque') updates.estoque = body.check
