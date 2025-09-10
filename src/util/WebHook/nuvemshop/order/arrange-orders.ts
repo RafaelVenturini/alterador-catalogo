@@ -146,8 +146,13 @@ async function updateOrderProducts(products: OrderItem[], pedidoId: number) {
 		try {
 			const values = [pedidoId, sku, qntd];
 			const productSql = `
-                INSERT INTO pedido_produto(pedido_id, sku, qntd)
-                VALUES (?, ?, ?)
+                INSERT INTO pedido_produto(pedido_id, tiny_id, qntd)
+                VALUES (?,
+                        (SELECT tiny_id
+                         FROM produto
+                         WHERE sku = ?
+                         LIMIT 1),
+                        ?)
                 ON DUPLICATE KEY UPDATE qntd=values(qntd)
 			`;
 			
