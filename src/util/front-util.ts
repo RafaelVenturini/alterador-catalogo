@@ -25,6 +25,7 @@ export const inputSx = {
 }
 
 export interface DatabaseCollected {
+	tiny_id: string,
 	name: string
 	sku: string
 	img: string
@@ -36,6 +37,7 @@ export interface DatabaseCollected {
 }
 
 export interface NewList {
+	tiny_id: string,
 	name: string
 	sku: string
 	img1: string
@@ -51,7 +53,7 @@ export interface UpdateListBody {
 	id: string,
 	check: boolean,
 	value: string,
-	sku: string,
+	tiny_id: string,
 }
 
 export interface WebHook {

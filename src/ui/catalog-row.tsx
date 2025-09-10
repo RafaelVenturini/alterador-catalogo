@@ -5,6 +5,7 @@ import {useCatalog} from "@/product-list-context";
 import {UpdateListBody} from "@/util/front-util";
 
 interface Props {
+	tiny_id: string;
 	name: string,
 	sku: string,
 	stock: boolean,
@@ -18,27 +19,27 @@ interface Props {
 
 interface Row {
 	id: keyof Props,
-	type: 'string' | 'boolean'  | 'number',
+	type: 'string' | 'boolean' | 'number',
 	db?: 'estoque' | 'novidade' | 'reposicao' | 'destaque' | 'prioridade'
 }
 
-export default function CatalogRow(product:Props) {
+export default function CatalogRow(product: Props) {
 	const {updateItem} = useCatalog()
-	const rows:Row[] = [
-		{id:'name',         type:'string' ,     },
-		{id:'sku',          type:'string' ,     },
-		{id:'stock',        type:'boolean',     db:'estoque'   },
-		{id:'newer',        type:'boolean',     db:'novidade'  },
-		{id:'repo',         type:'boolean',     db:'reposicao' },
-		{id:'highlight',    type:'boolean',     db:'destaque'  },
-		{id:'priority',     type:'number' ,     db:'prioridade'},
+	const rows: Row[] = [
+		{id: 'name', type: 'string',},
+		{id: 'sku', type: 'string',},
+		{id: 'stock', type: 'boolean', db: 'estoque'},
+		{id: 'newer', type: 'boolean', db: 'novidade'},
+		{id: 'repo', type: 'boolean', db: 'reposicao'},
+		{id: 'highlight', type: 'boolean', db: 'destaque'},
+		{id: 'priority', type: 'number', db: 'prioridade'},
 	]
 	
 	const sxCell = {
-		typography:{
+		typography: {
 			fontSize: '18px',
 		},
-		'& .MuiSvgIcon-root': { fontSize: 28 },
+		'& .MuiSvgIcon-root': {fontSize: 28},
 		
 	}
 	
@@ -48,11 +49,11 @@ export default function CatalogRow(product:Props) {
 	
 	const imgSpec = 'rounded-lg'
 	
-	function updateDataBase(x:UpdateListBody) {
+	function updateDataBase(x: UpdateListBody) {
 		updateItem(x)
 	}
 	
-	function fixImg(sku:string){
+	function fixImg(sku: string) {
 		fetch('/api/consertar-imagens', {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json',},
@@ -62,51 +63,47 @@ export default function CatalogRow(product:Props) {
 			.then(r => console.log(r))
 	}
 	
-	function createRowElement(row:Row, i:number) {
+	function createRowElement(row: Row, i: number) {
 		const key = row.db ?? row.id;
 		const valueView = product[row.id];
 		
 		if (row.type === 'string') {
-			return(
+			return (
 				<TableCell sx={sxCell} key={`${row.id} str ${i}`}>
 					{product[row.id]}
 				</TableCell>
 			)
-		}
-		
-		else if (row.type === 'boolean') {
-			return(
+		} else if (row.type === 'boolean') {
+			return (
 				<TableCell sx={sxCell} key={`${row.id} bool ${i}`}>
 					<Checkbox
 						name={String(key)}
 						checked={Boolean(valueView)}
-						onChange={(e) =>{
+						onChange={(e) => {
 							updateDataBase(
 								{
 									id: String(key),
 									value: e.target.value,
 									check: e.target.checked,
-									sku: product.sku,
+									tiny_id: product.tiny_id,
 								}
 							)
 						}}
 					/>
 				</TableCell>
 			)
-		}
-		
-		else{
-			return(
+		} else {
+			return (
 				<TableCell key={`${row.id} num ${i}`} sx={sxCell}>
 					<Rating
 						size='large'
 						name={String(key)}
 						value={Number(valueView)}
-						onChange={(_e,value) =>{
+						onChange={(_e, value) => {
 							updateDataBase(
 								{
 									id: String(key),
-									sku: product.sku,
+									tiny_id: product.tiny_id,
 									value: String(value) || '0',
 									check: false,
 								}
@@ -118,13 +115,13 @@ export default function CatalogRow(product:Props) {
 		}
 	}
 	
-	return(
+	return (
 		<>
-			{rows.map((row,i) => (
-				createRowElement(row,i)
+			{rows.map((row, i) => (
+				createRowElement(row, i)
 			))}
 			
-			<TableCell >
+			<TableCell>
 				<div className="flex flex-row gap-2">
 					<img
 						src={product.img1}
@@ -133,7 +130,7 @@ export default function CatalogRow(product:Props) {
 						style={imgStyle}
 						onError={() => fixImg(product.sku)}
 					/>
-					{ product.img2 && (
+					{product.img2 && (
 						<img
 							src={product.img2}
 							alt=''

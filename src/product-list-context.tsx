@@ -14,26 +14,27 @@ import {
 } from "@/util/front-util";
 
 interface CatalogContext {
-    items:NewList[];
+	items: NewList[];
 	loading: boolean;
-	updateItem: (body:UpdateListBody) => void;
+	updateItem: (body: UpdateListBody) => void;
 }
 
 
 const CatalogoContext = createContext<CatalogContext | undefined>(undefined)
-export function CatalogProvider({ children} : {children: ReactNode}){
+
+export function CatalogProvider({children}: { children: ReactNode }) {
 	const [items, setItems] = useState<NewList[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	
-	const fetchCatalog = async () =>{
+	const fetchCatalog = async () => {
 		fetch('/api/coletar-catalogo')
 			.then(res => res.json())
-			.then((res:DatabaseCollected[]) => {
+			.then((res: DatabaseCollected[]) => {
 				const newList: NewList[] = res.map(x => {
 					const imgList = x.img
-						.replaceAll('"','')
-						.replaceAll('[','')
-						.replaceAll(']','')
+						.replaceAll('"', '')
+						.replaceAll('[', '')
+						.replaceAll(']', '')
 						.split(',')
 					let img2 = null
 					if (imgList.length > 1) {
@@ -49,11 +50,11 @@ export function CatalogProvider({ children} : {children: ReactNode}){
 			})
 	}
 	
-	useEffect(()=>{
+	useEffect(() => {
 		fetchCatalog().then(() => setLoading(false))
-	},[])
+	}, [])
 	
-	const updateItem = async (body:UpdateListBody) =>{
+	const updateItem = async (body: UpdateListBody) => {
 		await fetch('/api/atualizar-catalogo', {
 			method: 'POST',
 			headers: {
@@ -65,7 +66,7 @@ export function CatalogProvider({ children} : {children: ReactNode}){
 		})
 		
 		setItems(prev => prev.map(x => {
-			if (x.sku === body.sku) {
+			if (x.sku === body.tiny_id) {
 				const updates: Partial<NewList> = {}
 				
 				if (body.id === 'estoque') updates.estoque = body.check
@@ -80,14 +81,14 @@ export function CatalogProvider({ children} : {children: ReactNode}){
 		}))
 	}
 	
-	return(
+	return (
 		<CatalogoContext.Provider value={{items, updateItem, loading}}>
 			{children}
 		</CatalogoContext.Provider>
 	)
 }
 
-export function useCatalog(){
+export function useCatalog() {
 	const context = useContext(CatalogoContext)
 	if (!context) throw new Error('useCatalog must be used within a CatalogProvider')
 	return context
