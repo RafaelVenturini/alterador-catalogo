@@ -1,10 +1,8 @@
-import {updateImg} from "@/util/WebHook/product/update-itens";
+import {updateAllFromBd} from "@/util/WebHook/product/update-itens";
 
 export async function PATCH() {
 	try {
-		const resp = await updateImg()
-		if (resp.success === 0) console.log(`Nenhum item precisou ser atualizado`)
-		console.log('Update Itens: ', resp)
+		const resp = await updateAllFromBd()
 		return Response.json({
 			status: 200,
 			msg: "Itens atualizados com sucesso",

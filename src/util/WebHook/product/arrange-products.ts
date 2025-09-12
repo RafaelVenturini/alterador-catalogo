@@ -1,6 +1,5 @@
-import {WebHookBD} from '@/util/database'
 import {config} from "dotenv"
-import {FieldPacket} from 'mysql2'
+import {Anexos} from "@/util/interfaces";
 
 config()
 
@@ -56,37 +55,8 @@ export function arrangeSku(skuFull: string, name: string) {
 	}
 }
 
-export function arrangeImg(img: string) {
+export function arrangeImg(img: Anexos[]) {
 	return JSON.stringify(img).replaceAll('{"anexo":', '').replaceAll('}', '')
-}
-
-interface PlcaRecord {
-	plca_id: number;
-}
-
-export async function plcaId(peso: string | number, largura: string | number, comprimento: string | number, altura: string | number) {
-	
-	const [rows] = await WebHookBD.execute(`
-        SELECT plca_id
-        FROM plca
-        WHERE peso = ?
-          AND largura = ?
-          AND comprimento = ?
-          AND altura = ?
-	`, [peso, largura, comprimento, altura]) as [PlcaRecord[], FieldPacket[]];
-	
-	let plcaSelect: number | undefined;
-	if (rows.length > 0) {
-		plcaSelect = rows[0].plca_id;
-	}
-	
-	let plca = null
-	
-	if (plcaSelect) {
-		plca = plcaSelect
-	}
-	
-	return plca
 }
 
 export async function pesquisar_id(id: string | number) {

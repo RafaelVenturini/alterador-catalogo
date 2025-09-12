@@ -168,7 +168,39 @@ export interface TinyProducts {
 	slug: string,
 }
 
-
 interface Anexos {
 	anexo: string
+}
+
+export interface ProductFetched {
+	produto: {
+		id: string;
+		data_criacao: string;
+		nome: string;
+		codigo: string;
+		preco: number,
+		preco_promocional: number,
+		unidade: string;
+		gtin: string;
+		tipoVariacao: string;
+		localizacao: string;
+		preco_custo: number,
+		preco_custo_medio: number,
+		situacao: string;
+	}
+}
+
+export interface AllProductsArranged {
+	id: string;
+	nome: string;
+	sku: string;
+	preco: number;
+	promo: number;
+	criacao: string;
+}
+
+export function sleep(ms: number) {
+	return new Promise((resolve) => {
+		setTimeout(resolve, ms);
+	});
 }

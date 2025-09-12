@@ -4,24 +4,24 @@ import {
 	pesquisar_id
 } from "@/util/WebHook/product/arrange-products";
 import {onDuplicate, WebHookBD} from "@/util/database";
+import {ProductsById} from "@/util/interfaces";
 
 export async function getTiny(arr: number[]) {
 	try {
 		for (const id of arr) {
 			console.log('Adicionando o item: ', id)
-			const data = await pesquisar_id(id);
+			const data: ProductsById = await pesquisar_id(id);
 			
 			const nome = data.nome
 			const sku = data.codigo
 			const preco = data.preco
-			const ncm = data.ncm
 			const anexo = arrangeImg(data.anexos)
 			
 			const {
 				blu, inf, top,
 				tec, tam, cor, mul
 			} = arrangeSku(sku, nome)
-			const criacao = new Date().toISOString().split('T')[0]
+			const criacao: string = new Date().toISOString().split('T')[0]
 			
 			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, criacao]
 			await WebHookBD.execute(`INSERT INTO produto(sku, tiny_id,
