@@ -13,11 +13,20 @@ export async function PATCH(req: Request) {
 			})
 		} else {
 			getProductByDate(body.date)
-				.then(r => console.log(r))
-				.catch(e => console.log(e))
+				.then(r => {
+					console.log(r)
+					return Response.json({
+						status: 200,
+						msg: "Itens atualizados com sucesso",
+					})
+				})
+				.catch(e => {
+					console.log(e)
+					return Response.json({status: 400, error: e})
+				})
 		}
 	} catch (e) {
 		console.log("Erro ao receber WebHook: ", e)
-		return Response.json({status: 500, error: e})
+		return Response.json({status: 400, error: e})
 	}
 }

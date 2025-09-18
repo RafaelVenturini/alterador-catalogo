@@ -20,7 +20,7 @@ export async function getTiny(arr: number[]) {
 			const {
 				blu, inf, top,
 				tec, tam, cor, mul
-			} = arrangeSku(sku, nome)
+			} = await arrangeSku(sku)
 			
 			const [existsSql] = await WebHookBD.execute(`SELECT tiny_id
                                                          FROM produto
