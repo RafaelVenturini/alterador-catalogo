@@ -5,7 +5,6 @@ import {UpdateListBody} from "@/util/front-util";
 export async function POST(req: Request) {
 	const x = await req.json()
 	const body: UpdateListBody = x.body
-	console.log('Recebido: ', body)
 	
 	if (body.value === 'on') {
 		await connection.execute(

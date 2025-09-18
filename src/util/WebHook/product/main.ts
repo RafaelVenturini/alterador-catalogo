@@ -21,24 +21,35 @@ export async function getTiny(arr: number[]) {
 				blu, inf, top,
 				tec, tam, cor, mul
 			} = arrangeSku(sku, nome)
-			const criacao: string = new Date().toISOString().split('T')[0]
 			
-			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top, criacao]
-			await WebHookBD.execute(`INSERT INTO produto(sku, tiny_id,
-                                                         nome,
-                                                         preco, img,
-                                                         tamanho,
-                                                         blu_id,
-                                                         cor_id, inf_id,
-                                                         mul_id,
-                                                         tec_id,
-                                                         top_id,
-                                                         criacao)
-                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                             ?, ?, ?, ?)
-                                     ON DUPLICATE KEY UPDATE ${onDuplicate(['sku', 'nome', 'preco', 'img', 'tamanho', 'blu_id', 'cor_id', 'inf_id', 'mul_id', 'tec_id',
-                                         'top_id', 'criacao'])}
-			`, produto)
+			const [existsSql] = await WebHookBD.execute(`SELECT tiny_id
+                                                         FROM produto
+                                                         WHERE tiny_id = ?`, [id])
+			// @ts-expect-error existsSql = [exists]
+			const exists = existsSql.length > 0
+			
+			const produto = [sku, id, nome, preco, anexo, tam, blu, cor, inf, mul, tec, top]
+			let sql = `
+                INSERT INTO produto(sku, tiny_id, nome,
+                                    preco, img, tamanho,
+                                    blu_id, cor_id, inf_id,
+                                    mul_id, tec_id, top_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE ${onDuplicate(
+                        ['sku', 'nome', 'preco',
+                            'img', 'tamanho', 'blu_id',
+                            'cor_id', 'inf_id', 'mul_id',
+                            'tec_id', 'top_id'
+                        ])}
+			`
+			
+			if (!exists) {
+				sql = sql
+					.replace('top_id', 'top_id, criacao')
+					.replace('?)', '?, NOW())')
+			}
+			
+			await WebHookBD.execute(sql, produto)
 		}
 		return {status: "OK"}
 	} catch (e) {
