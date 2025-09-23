@@ -41,7 +41,6 @@ export interface NewList {
 	name: string
 	sku: string
 	img1: string
-	img2: string | null
 	estoque: boolean
 	novidade: boolean
 	destaque: boolean

@@ -127,6 +127,7 @@ export default function CatalogTable() {
 							<Typography
 								sx={{color: palette.font.read}}>{x.label}</Typography>
 							<Checkbox
+								sx={{color: palette.font.read}}
 								name={x.value}
 								defaultChecked={false}
 								onChange={(e) => {
@@ -183,7 +184,6 @@ export default function CatalogTable() {
 							highlight={item.destaque}
 							priority={item.prioridade}
 							img1={item.img1}
-							img2={item.img2}
 							tiny_id={item.tiny_id}
 						/>
 					}

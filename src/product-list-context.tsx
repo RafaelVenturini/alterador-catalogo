@@ -36,14 +36,9 @@ export function CatalogProvider({children}: { children: ReactNode }) {
 						.replaceAll('[', '')
 						.replaceAll(']', '')
 						.split(',')
-					let img2 = null
-					if (imgList.length > 1) {
-						img2 = imgList[1]
-					}
 					return {
 						...x,
 						img1: imgList[0],
-						img2: img2
 					}
 				})
 				setItems(newList)

@@ -14,7 +14,6 @@ interface Props {
 	highlight: boolean,
 	priority: number,
 	img1: string,
-	img2: string | null,
 }
 
 interface Row {
@@ -130,14 +129,6 @@ export default function CatalogRow(product: Props) {
 						style={imgStyle}
 						onError={() => fixImg(product.sku)}
 					/>
-					{product.img2 && (
-						<img
-							src={product.img2}
-							alt=''
-							className={imgSpec}
-							style={imgStyle}
-							loading="lazy"/>
-					)}
 				</div>
 			</TableCell>
 		</>
