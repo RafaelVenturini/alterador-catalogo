@@ -38,20 +38,25 @@ export default function CatalogTable() {
 	const [rows, setRows] = useState<NewList[]>([])
 	
 	useEffect(() => {
-		const plus = ['-TP-', '-G-', "-GG-"]
-		const unico = ['-TU-', '-P-', "-M-"]
+		const plus = ['TP', 'G', "GG", "GS"]
+		const unico = ['TU', "PP", 'P', "M", "PM"]
 		
 		let filtred = items
-		if (filterList.category.id > 0) {
-			if (filterList.category.id % 2 === 0) filtred = filtred.filter((x) => plus.some(tamanho => x.sku.includes(tamanho)))
-			else filtred = filtred.filter((x) => unico.some(tamanho => x.sku.includes(tamanho)))
-			
-			if ([1, 2].includes(filterList.category.id)) filtred = filtred.filter((x) => x.sku[0] === 'L')
-			if ([3, 4].includes(filterList.category.id)) filtred = filtred.filter((x) => x.sku[0] === 'S')
-			if ([5, 6].includes(filterList.category.id)) filtred = filtred.filter((x) => x.sku[0] === 'M')
-			if ([7, 8].includes(filterList.category.id)) filtred = filtred.filter((x) => ['R', 'C', 'B'].includes(x.sku[0]))
-		}
 		
+		const id = filterList.category.id
+		
+		if (id > 0) {
+			if (id % 2 === 0) {
+				filtred = filtred.filter((x) => plus.some(tamanho => tamanho.includes(x.categoria.tamanho || '')))
+			} else {
+				filtred = filtred.filter((x) => unico.some(tamanho => tamanho.includes(x.categoria.tamanho || '')))
+			}
+			
+			if ([1, 2].includes(id)) filtred = filtred.filter((x) => x.categoria.tipo === 'Legging')
+			if ([3, 4].includes(id)) filtred = filtred.filter((x) => x.categoria.tipo === 'Short')
+			if ([5, 6].includes(id)) filtred = filtred.filter((x) => x.categoria.tipo === 'Macacao' || x.categoria.tipo === 'Macaquinho')
+			if ([7, 8].includes(id)) filtred = filtred.filter((x) => x.categoria.tipo === null)
+		}
 		
 		if (filterList.stock) filtred = filtred.filter((x) => x.estoque)
 		if (filterList.newer) filtred = filtred.filter((x) => x.novidade)
@@ -73,14 +78,14 @@ export default function CatalogTable() {
 	const headers = () => (
 		<TableHead sx={{borderBottom: `2px solid ${palette.tertiary}`}}>
 			<TableRow>
-				<TableCell sx={{width: '20%'}}>Nome</TableCell>
-				<TableCell sx={{width: '20%'}}>SKU</TableCell>
-				<TableCell sx={{width: '5%'}}>Estoque</TableCell>
-				<TableCell sx={{width: '5%'}}>Novidade</TableCell>
-				<TableCell sx={{width: '5%'}}>Reposição</TableCell>
-				<TableCell sx={{width: '5%'}}>Destaque</TableCell>
+				<TableCell>Nome</TableCell>
+				<TableCell>SKU</TableCell>
+				<TableCell>Estoque</TableCell>
+				<TableCell>Novidade</TableCell>
+				<TableCell>Reposição</TableCell>
+				<TableCell>Destaque</TableCell>
 				<TableCell>Prioridade</TableCell>
-				<TableCell sx={{width: '25%'}}>Preview</TableCell>
+				<TableCell sx={{width: '250px'}}>Preview</TableCell>
 			</TableRow>
 		</TableHead>
 	)
@@ -160,7 +165,12 @@ export default function CatalogTable() {
 				/>
 			
 			</Box>
-			<Paper sx={{height: 800, width: "100%", mt: 2}}>
+			<Paper sx={{
+				height: 800,
+				width: "100%",
+				mt: 2,
+				maxHeight: '79.5vh'
+			}}>
 				<TableVirtuoso
 					data={rows}
 					fixedHeaderContent={headers}
@@ -183,8 +193,10 @@ export default function CatalogTable() {
 							repo={item.reposicao}
 							highlight={item.destaque}
 							priority={item.prioridade}
-							img1={item.img1}
+							img={item.img}
 							tiny_id={item.tiny_id}
+							category={item.categoria}
+							color={item.cor}
 						/>
 					}
 				/>

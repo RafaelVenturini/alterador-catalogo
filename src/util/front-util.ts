@@ -26,6 +26,22 @@ export const inputSx = {
 
 export interface DatabaseCollected {
 	tiny_id: string,
+	name: string;
+	sku: string;
+	img: string;
+	estoque: boolean;
+	novidade: boolean;
+	destaque: boolean;
+	reposicao: boolean;
+	prioridade: number;
+	tamanho: string;
+	tipo: string;
+	hex: string;
+	nome: string;
+}
+
+export interface NewList {
+	tiny_id: string,
 	name: string
 	sku: string
 	img: string
@@ -34,18 +50,14 @@ export interface DatabaseCollected {
 	destaque: boolean
 	reposicao: boolean
 	prioridade: number
-}
-
-export interface NewList {
-	tiny_id: string,
-	name: string
-	sku: string
-	img1: string
-	estoque: boolean
-	novidade: boolean
-	destaque: boolean
-	reposicao: boolean
-	prioridade: number
+	categoria: {
+		tamanho: string | null;
+		tipo: string | null;
+	}
+	cor: {
+		hex: string | null;
+		nome: string | null;
+	}
 }
 
 export interface UpdateListBody {

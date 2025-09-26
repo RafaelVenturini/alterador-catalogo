@@ -38,7 +38,15 @@ export function CatalogProvider({children}: { children: ReactNode }) {
 						.split(',')
 					return {
 						...x,
-						img1: imgList[0],
+						img: imgList[0],
+						cor: {
+							hex: x.hex,
+							nome: x.nome
+						},
+						categoria: {
+							tamanho: x.tamanho,
+							tipo: x.tipo
+						}
 					}
 				})
 				setItems(newList)
