@@ -27,7 +27,7 @@ export function CatalogProvider({children}: { children: ReactNode }) {
 	const [loading, setLoading] = useState<boolean>(true)
 	
 	const fetchCatalog = async () => {
-		fetch('/api/coletar-catalogo')
+		fetch('/api/catalogo')
 			.then(res => res.json())
 			.then((res: DatabaseCollected[]) => {
 				const newList: NewList[] = res.map(x => {
@@ -58,7 +58,7 @@ export function CatalogProvider({children}: { children: ReactNode }) {
 	}, [])
 	
 	const updateItem = async (body: UpdateListBody) => {
-		await fetch('/api/atualizar-catalogo', {
+		await fetch('/api/catalogo', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
