@@ -147,9 +147,11 @@ export default function CatalogRow(product: Props) {
 						src={product.img || "/toque.webp"}
 						alt=''
 						className={imgSpec}
-						onError={() => {
-							console.log('Error loading image')
+						onError={({currentTarget}) => {
+							currentTarget.onerror = null; // prevents looping
+							currentTarget.src = "/toque.webp";
 						}}
+						
 						onClick={() => fixImg(product.tiny_id)}
 					/>
 					<Box
