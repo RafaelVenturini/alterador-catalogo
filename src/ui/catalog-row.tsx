@@ -3,7 +3,6 @@ import Checkbox from '@mui/material/Checkbox';
 import Rating from '@mui/material/Rating';
 import {useCatalog} from "@/product-list-context";
 import {fixImg, UpdateListBody} from "@/util/front-util";
-import Image from "next/image";
 import Box from "@mui/material/Box";
 import {Typography} from "@mui/material";
 
@@ -141,7 +140,7 @@ export default function CatalogRow(product: Props) {
 			
 			<TableCell>
 				<div className="flex flex-row gap-2">
-					<Image
+					<img
 						height={100}
 						width={100}
 						src={product.img || "/toque.webp"}
