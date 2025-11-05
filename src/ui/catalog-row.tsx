@@ -2,7 +2,7 @@ import TableCell from '@mui/material/TableCell';
 import Checkbox from '@mui/material/Checkbox';
 import Rating from '@mui/material/Rating';
 import {useCatalog} from "@/product-list-context";
-import {UpdateListBody} from "@/util/front-util";
+import {fixImg, UpdateListBody} from "@/util/front-util";
 import Image from "next/image";
 import Box from "@mui/material/Box";
 import {Typography} from "@mui/material";
@@ -76,16 +76,6 @@ export default function CatalogRow(product: Props) {
 		updateItem(x)
 	}
 	
-	function fixImg(sku: string) {
-		fetch('/api/consertar-imagens', {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json',},
-			body: JSON.stringify({sku: sku,})
-		})
-			.then(r => r.json())
-			.then(r => console.log(r))
-	}
-	
 	function createRowElement(row: Row, i: number) {
 		const key = row.db ?? row.id;
 		const valueView = product[row.id];
@@ -154,10 +144,13 @@ export default function CatalogRow(product: Props) {
 					<Image
 						height={100}
 						width={100}
-						src={product.img}
+						src={product.img || "/toque.webp"}
 						alt=''
 						className={imgSpec}
-						onError={() => fixImg(product.sku)}
+						onError={() => {
+							console.log('Error loading image')
+						}}
+						onClick={() => fixImg(product.tiny_id)}
 					/>
 					<Box
 						sx={{

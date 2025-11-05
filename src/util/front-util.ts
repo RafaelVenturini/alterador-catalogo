@@ -66,3 +66,15 @@ export interface UpdateListBody {
 	value: string,
 	tiny_id: string,
 }
+
+export function fixImg(id: number | string) {
+	const opt = {
+		method: 'PUT',
+		body: JSON.stringify({id})
+	}
+	
+	fetch('https://n8n.ialiss.com.br/webhook/tools/fix-img', opt)
+		.then(res => res.json())
+		.then(data => console.log(data))
+		.catch(err => console.log(err))
+}
