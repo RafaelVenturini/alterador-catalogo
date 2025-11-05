@@ -33,6 +33,7 @@ export function CatalogProvider({children}: { children: ReactNode }) {
 				const newList: NewList[] = res.map(x => {
 					const imgList = x.img
 						.replaceAll('"', '')
+						.replaceAll("'", '')
 						.replaceAll('[', '')
 						.replaceAll(']', '')
 						.split(',')
