@@ -3,29 +3,43 @@ import {connection} from "@/util/database";
 import {UpdateListBody} from "@/util/front-util";
 
 export async function POST(req: Request) {
-	const x = await req.json()
-	const body: UpdateListBody = x.body
-	console.log(body)
-	
-	if (body.value === 'on') {
-		await connection.execute(
-			`
-                UPDATE catalogo
-                SET ${body.id} = ${body.check}
-                WHERE tiny_id = "${body.tiny_id}"
-			`
-		)
-	} else {
-		await connection.execute(
-			`
-                UPDATE catalogo
-                SET prioridade = ${body.value}
-                WHERE tiny_id = "${body.tiny_id}"
-			`
-		)
+	try {
+		
+		const x = await req.json()
+		const body: UpdateListBody = x.body
+		console.log(body)
+		
+		if (body.value === 'on') {
+			await connection.execute(
+				`
+                    UPDATE catalogo
+                    SET ${body.id} = ${body.check}
+                    WHERE tiny_id = "${body.tiny_id}"
+				`
+			)
+		} else {
+			await connection.execute(
+				`
+                    UPDATE catalogo
+                    SET prioridade = ${body.value}
+                    WHERE tiny_id = "${body.tiny_id}"
+				`
+			)
+		}
+	} catch (e) {
+		console.log("Erro ao atualizar catalogo: ", e)
+		return NextResponse.json({err: e}, {status: 500});
 	}
 	
-	return NextResponse.json({situacao: 'Neymar 2028'});
+	await fetch('https://catalogomoda.com.br/api/server/invalidar-cache', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({tag: "catalogo"}),
+	})
+	
+	return NextResponse.json({message: 'Catalogo atualizado com sucesso!'}, {status: 200});
 }
 
 export async function GET() {
