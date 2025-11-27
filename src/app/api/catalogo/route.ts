@@ -2,9 +2,10 @@ import {NextResponse} from 'next/server';
 import {connection} from "@/util/database";
 import {UpdateListBody} from "@/util/front-util";
 
+const isLiss = process.env.NEXT_PUBLIC_STORE === "liss"
+
 export async function POST(req: Request) {
 	try {
-		
 		const x = await req.json()
 		const body: UpdateListBody = x.body
 		console.log(body)
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
 		if (body.value === 'on') {
 			await connection.execute(
 				`
-                    UPDATE catalogo
+                    UPDATE ${isLiss ? "catalogo" : "vitrine"}
                     SET ${body.id} = ${body.check}
                     WHERE tiny_id = "${body.tiny_id}"
 				`
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
 		} else {
 			await connection.execute(
 				`
-                    UPDATE catalogo
+                    UPDATE ${isLiss ? "catalogo" : "vitrine"}
                     SET prioridade = ${body.value}
                     WHERE tiny_id = "${body.tiny_id}"
 				`
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
+	const mainTable = isLiss ? "catalogo" : "vitrine"
 	try {
 		const [rows] = await connection.execute(`
             SELECT p.tiny_id,
@@ -59,7 +61,7 @@ export async function GET() {
                    cr.hex as hex,
                    cr.nome
             FROM produto p
-                     LEFT JOIN catalogo c ON p.tiny_id = c.tiny_id
+                     LEFT JOIN ${mainTable} c ON p.tiny_id = c.tiny_id
                      LEFT JOIN inferior i ON p.inf_id = i.inf_id
                      LEFT JOIN cor cr ON p.cor_id = cr.cor_id
             WHERE img IS NOT NULL
@@ -82,7 +84,7 @@ export async function GET() {
                    CONCAT_WS(',', cp.hex, cs.hex, ct.hex) as hex,
                    mt.nome
             FROM produto p
-                     LEFT JOIN catalogo c ON p.tiny_id = c.tiny_id
+                     LEFT JOIN ${mainTable} c ON p.tiny_id = c.tiny_id
                      LEFT JOIN inferior i ON p.inf_id = i.inf_id
                      LEFT JOIN multcor mt ON p.mul_id = mt.mult_id
                      LEFT JOIN cor cp ON mt.cor_pri = cp.cor_id
