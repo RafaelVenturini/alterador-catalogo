@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {connection} from "@/util/database";
 import {UpdateListBody} from "@/util/front-util";
+import {linksShowroom, linksWhatsapp} from "@/util/catalog-links";
 
 const isLiss = process.env.NEXT_PUBLIC_STORE === "liss"
 
@@ -31,15 +32,22 @@ export async function POST(req: Request) {
 		console.log("Erro ao atualizar catalogo: ", e)
 		return NextResponse.json({err: e}, {status: 500});
 	}
-	
-	await fetch('https://catalogomoda.com.br/api/server/invalidar-cache', {
+
+	const opt = {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({tag: "catalogo"}),
-	})
-	
+	}
+
+	const links = isLiss ? linksWhatsapp : linksShowroom
+
+	for (const url of links) {
+		await fetch(`https://${url}/api/server/invalidar-cache`, opt)
+	}
+
+
 	return NextResponse.json({message: 'Catalogo atualizado com sucesso!'}, {status: 200});
 }
 
