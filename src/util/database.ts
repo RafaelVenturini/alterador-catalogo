@@ -3,13 +3,12 @@ import {config} from "dotenv"
 
 config()
 
-
 export const connection = mysql.createPool({
-	host: process.env.HOST,
+	host: process.env.CATALOG_FIT_MYSQL_DB_HOST,
 	port: 3307,
-	user: process.env.USER,
-	password: process.env.PASSWORD,
-	database: process.env.DATABASE,
+	user: process.env.CATALOG_FIT_MYSQL_DB_USER,
+	password: process.env.CATALOG_FIT_MYSQL_DB_PASSWORD,
+	database: process.env.CATALOG_FIT_MYSQL_DB_SCHEMA,
 	waitForConnections: true,
 	idleTimeout: 300000,
 	connectionLimit: 12,
