@@ -38,6 +38,7 @@ export async function POST(req: Request) {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ tag: "catalogo" }),
   };
 
   const links = isLiss ? linksWhatsapp : linksShowroom;
